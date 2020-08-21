@@ -2,12 +2,12 @@ import collections
 import re
 from typing import Optional
 
-from result import RunResult, PlanRunResult
+from sessionscript.result import RunResult, PlanRunResult
 
 
-class Stag:
-    def __init__(self, stag_id=None):
-        self.stag_id = stag_id if stag_id is not None else self.__class__.__name__
+class Stage:
+    def __init__(self, stage_id=None):
+        self.stage_id = stage_id if stage_id is not None else self.__class__.__name__
 
     def run(self,*args,**kwargs) -> RunResult:
         raise NotImplementedError
@@ -16,32 +16,32 @@ class Stag:
 class Plan:
     PlanAllPassToken = "plan done."
 
-    def __init__(self, units: [Stag]):
+    def __init__(self, units: [Stage]):
         self.plan_units: list = units
         self.plan_units_freeze = None
 
-    def add_stag(self, unit: Stag):
-        assert isinstance(unit, Stag), "Only support Stag class"
+    def add_stage(self, unit: Stage):
+        assert isinstance(unit, Stage), "Only support Stage class"
         self.plan_units.append(unit)
 
-    def pop_stag(self, *args, **kwargs):
+    def pop_stage(self, *args, **kwargs):
         return self.plan_units.pop(*args, **kwargs)
 
     def run_complete_plan(self,*args,**kwargs) -> RunResult:
         freezen_plan = self._freeze()
-        stags_result = []
+        stages_result = []
         for stag in freezen_plan:
             result: RunResult = stag.run(*args,**kwargs)
             if result.success is False:
                 return PlanRunResult(success=False,
-                                     run_stag=stag.stag_id,
+                                     run_stage=stag.stage_id,
                                      msg=type(result.err)(f"step_run_error: {result.err}"),
-                                     err=RuntimeError(f"Stag ERROR:{stag.stag_id}"))
-            stags_result.append(result.json())
+                                     err=RuntimeError(f"Stage ERROR:{stag.stage_id}"))
+            stages_result.append(result.json())
 
         return PlanRunResult(success=True,
-                             run_stag=self.PlanAllPassToken,
-                             data=stags_result)
+                             run_stage=self.PlanAllPassToken,
+                             data=stages_result)
 
     def _freeze(self):
         self.plan_units_freeze = tuple(self.plan_units)
@@ -64,9 +64,9 @@ class SwitchPlan(collections.OrderedDict):
         assert isinstance(plan, Plan), "Only support Plan class"
         return plan.run_complete_plan(*args,**kwargs)
 
-    def add_plan(self, lable: str, plan: Plan):
+    def add_plan(self, switch_label: str, plan: Plan):
         assert isinstance(plan, Plan), "Only support Plan class"
-        self.__setitem__(lable, plan)
+        self.__setitem__(switch_label, plan)
 
     def add_default_plan(self, plan: Plan):
         assert isinstance(plan, Plan), "Only support Plan class"

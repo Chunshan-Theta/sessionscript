@@ -1,34 +1,34 @@
 import unittest
-from manger import Stag, Plan, SwitchPlan, SwitchRePattenPlan
-from result import RunResult
+from sessionscript.manger import Stage, Plan, SwitchPlan, SwitchRePattenPlan
+from sessionscript.result import RunResult
 
 
-class StagRepeat_default(Stag):
+class StageRepeat_default(Stage):
     def run(self,text) -> RunResult:
         return RunResult(success=True,label="RepeatText",body={
             "txt": f"i don't known your plan,but i got this-> 『{text}』."
         })
 
-class StagRepeat(Stag):
+class StageRepeat(Stage):
     def run(self,text) -> RunResult:
         return RunResult(success=True,label="RepeatText",body={
             "txt": f"『{text}』"
         })
 
 
-class StagStaticResponds(Stag):
+class StageStaticResponds(Stage):
     def run(self,text) -> RunResult:
         return RunResult(success=True,label="RepeatText",body={
             "txt": f"i got this-> 『{text}』.  I will repeat it again."
         })
 
-class StagStaticResponds_A(Stag):
+class StageStaticResponds_A(Stage):
     def run(self,text) -> RunResult:
         return RunResult(success=True,label="RepeatText",body={
             "txt": f"I'm Plan A. i got this-> 『{text}』.  I will repeat it again."
         })
 
-class StagStaticResponds_B(Stag):
+class StageStaticResponds_B(Stage):
     def run(self,text) -> RunResult:
         return RunResult(success=True,label="RepeatText",body={
             "txt": f"I'm Plan B. i got this-> 『{text}』.  I will repeat it again."
@@ -48,12 +48,12 @@ class ChatBotCase(unittest.TestCase):
 
         #
         switch_plan_handler = SwitchPlan()
-        default_plan = Plan(units=[StagRepeat_default()])
-        base_responds_plan = Plan(units=[StagStaticResponds(),StagRepeat()])
+        default_plan = Plan(units=[StageRepeat_default()])
+        base_responds_plan = Plan(units=[StageStaticResponds(),StageRepeat()])
 
         #
         switch_plan_handler.add_default_plan(plan=default_plan)
-        switch_plan_handler.add_plan(lable="responds",plan=base_responds_plan)
+        switch_plan_handler.add_plan(switch_label="responds",plan=base_responds_plan)
 
         #
         print('-' * 20)
@@ -68,9 +68,9 @@ class ChatBotCase(unittest.TestCase):
     def test_control_by_user_say(self):
         #
         switch_plan_handler = SwitchRePattenPlan()
-        default_plan = Plan(units=[StagRepeat_default()])
-        base_responds_planA = Plan(units=[StagStaticResponds_A(), StagRepeat()])
-        base_responds_planB = Plan(units=[StagStaticResponds_B(), StagRepeat()])
+        default_plan = Plan(units=[StageRepeat_default()])
+        base_responds_planA = Plan(units=[StageStaticResponds_A(), StageRepeat()])
+        base_responds_planB = Plan(units=[StageStaticResponds_B(), StageRepeat()])
 
         #
         switch_plan_handler.add_default_plan(plan=default_plan)

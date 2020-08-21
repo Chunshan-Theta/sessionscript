@@ -25,9 +25,9 @@ class RunResult:
 
 
 class PlanRunResult(RunResult):
-    def __init__(self, success: bool, run_stag,data=None, msg:str=None, err: Exception = None):
+    def __init__(self, success: bool, run_stage,data=None, msg:str=None, err: Exception = None):
         body = {
-            "run_stag": run_stag
+            "run_stage": run_stage
         }
         if msg is not None:
             body.update({
@@ -37,4 +37,4 @@ class PlanRunResult(RunResult):
             body.update({
                 "data":data
             })
-        super().__init__(success, body,run_stag, err)
+        super().__init__(success, body,run_stage, err)
