@@ -49,7 +49,9 @@ class ChatBotCase(unittest.TestCase):
         #
         switch_plan_handler = SwitchPlan()
         default_plan = Plan(units=[StageRepeat_default()])
-        base_responds_plan = Plan(units=[StageStaticResponds(),StageRepeat()])
+        base_responds_plan = Plan()
+        base_responds_plan.add_stage(StageStaticResponds())
+        base_responds_plan.add_stage(StageRepeat())
 
         #
         switch_plan_handler.add_default_plan(plan=default_plan)

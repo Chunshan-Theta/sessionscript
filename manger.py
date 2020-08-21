@@ -16,8 +16,8 @@ class Stage:
 class Plan:
     PlanAllPassToken = "plan done."
 
-    def __init__(self, units: [Stage]):
-        self.plan_units: list = units
+    def __init__(self, units: [Stage] = None):
+        self.plan_units: list = units if isinstance(units, list) else []
         self.plan_units_freeze = None
 
     def add_stage(self, unit: Stage):
